@@ -1,0 +1,97 @@
+# Quantum Teleportation Service: Network & Circuit-Level Simulation
+
+[![Julia](https://img.shields.io/badge/Julia-1.9+-9558B2?style=flat&logo=julia&logoColor=white)](https://julialang.org/)
+[![Qiskit](https://img.shields.io/badge/Qiskit-1.0+-6929C4?style=flat&logo=qiskit&logoColor=white)](https://qiskit.org/)
+[![QuantumSavory](https://img.shields.io/badge/QuantumSavory-NetworkSim-009688?style=flat)](https://github.com/QuantumSavory/QuantumSavory.jl)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+A dual-paradigm simulation framework for **Quantum Teleportation** protocols in noisy quantum networks. This project compares **discrete-event quantum network simulations** (in Julia using `QuantumSavory.jl` and `ConcurrentSim.jl`) with **gate-level quantum circuit simulations** (in Python using `Qiskit Aer`), benchmarking quantum state fidelity decay across parameterized depolarizing noise channels ($p_w \in [0.0, 1.0]$).
+
+---
+
+## 🛠️ Technical Overview & Architecture
+
+This repository implements quantum teleportation across two complementary simulation levels:
+
+### 1. Event-Driven Quantum Network Simulation (Julia / QuantumSavory)
+* **Frameworks**: `QuantumSavory.jl`, `ConcurrentSim.jl`, `ResumableFunctions.jl`, `Graphs.jl`.
+* **Asynchronous Protocol Architecture**: Models distributed quantum node interactions as concurrent processes (`@process`, `@resumable` generators):
+  * **`QNCoreProtocol`**: Simulates noisy Bell pair initialization over an $N$-node network with stochastic entanglement setup time (exponentially distributed, $\mu = 200\text{ ms}$).
+  * **`SenderProtocol`**: Encapsulates initial quantum state injection, Bell state measurement (BSM), and classical message transmission over channels with realistic latency ($t_{\text{delay}} = 20\text{ ms}$).
+  * **`ReceiverProtocol`**: Listens for classical measurement tags via asynchronous message buffers (`messagebuffer`), applying conditional Pauli corrections ($X, Z$).
+* **Noise Model**: Applies depolarizing channels to initialized Bell states:
+  $$\rho_{\text{depol}} = (1 - p_w) |\Phi^+\rangle\langle\Phi^+| + p_w \frac{I}{4}$$
+
+### 2. Gate-Level Quantum Circuit Simulation (Python / Qiskit)
+* **Frameworks**: `Qiskit`, `Qiskit Aer`, `NumPy`, `Matplotlib`.
+* **Density Matrix Execution**: Utilizes `AerSimulator(method='density_matrix')` for exact quantum state tomography under noise.
+* **Dynamic Logic**: Employs Qiskit's `if_test` runtime classical control flow to model real-time feed-forward Pauli corrections.
+* **Custom Noise Injection**: Injects 2-qubit depolarizing error channels (`depolarizing_error(pw, 2)`) targeted specifically at entangling `CX` gates during Bell state generation.
+
+---
+
+## 📊 Key Results & Fidelity Analysis
+
+Quantum State Fidelity $F(\rho_{\text{in}}, \rho_{\text{out}}) = \text{Tr}\left(\sqrt{\sqrt{\rho_{\text{in}}} \rho_{\text{out}} \sqrt{\rho_{\text{in}}}}\right)$ was systematically computed across depolarization probabilities $p_w \in [0.0, 1.0]$.
+
+| Metric | Julia (`QuantumSavory`) | Python (`Qiskit Aer`) |
+| :--- | :--- | :--- |
+| **Ideal Fidelity ($p_w = 0$)** | `1.00` | `1.00` |
+| **Completely Depolarized ($p_w = 1.0$)** | `0.25` (Maximal Mixed State) | `0.25` (Maximal Mixed State) |
+| **Noise Sensitivity Curve** | Linear degradation tracking $1 - \frac{3}{4}p_w$ | Density matrix decay matching theoretical bounds |
+| **Key Insights** | Validates distributed time-dependent protocol dynamics | Validates exact quantum circuit gate fidelity |
+
+* **Plots generated**: `Results/plot_julia.png` and `Results/plot_qiskit.png` demonstrate exact numerical agreement between event-driven network protocols and gate-level circuit executions.
+
+---
+
+## 📂 Project Structure
+
+```
+teleportation-service/
+├── Results/
+│   ├── plot_julia.png             # Benchmark: Fidelity vs Depolarization (Julia)
+│   └── plot_qiskit.png            # Benchmark: Fidelity vs Depolarization (Qiskit)
+└── README.md                       # Technical documentation & benchmark analysis
+```
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+* **Julia** $\ge 1.9$
+* **Python** $\ge 3.9$ with `qiskit`, `qiskit-aer`, `numpy`, `matplotlib`, `jupyter`
+
+### Running the Julia Simulation
+
+```bash
+# Clone the repository
+git clone https://github.com/Dariobande/teleportation-service.git
+cd teleportation-service/Julia
+
+# Run the Julia simulation script
+julia --project=../TeleportationService TeleportationService.jl
+```
+
+### Running the Python / Qiskit Notebook
+
+```bash
+cd teleportation-service/Python
+jupyter notebook teleportation_service.ipynb
+```
+
+---
+
+## 💡 Tech Stack & Skills Demonstrated
+
+* **Quantum Computing & Information**: Bell state entanglements, Quantum Teleportation, Quantum Noise Modeling (Depolarizing Channels), Quantum State Fidelity Analysis.
+* **Network & Event-Driven Simulation**: Asynchronous protocol design, concurrent processes, classical delay modeling, message buffers.
+* **Software Engineering**: Modular Julia package structure, Qiskit workflow optimization, dual-language implementation (Julia & Python), reproducible benchmarking.
+
+---
+
+## 📜 License
+
+Distributed under the MIT License. See `LICENSE` for details.
