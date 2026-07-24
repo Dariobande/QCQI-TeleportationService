@@ -5,7 +5,9 @@
 [![QuantumSavory](https://img.shields.io/badge/QuantumSavory-NetworkSim-009688?style=flat)](https://github.com/QuantumSavory/QuantumSavory.jl)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A dual-paradigm simulation framework for **Quantum Teleportation** protocols in noisy quantum networks. This project compares **discrete-event quantum network simulations** (in Julia using `QuantumSavory.jl` and `ConcurrentSim.jl`) with **gate-level quantum circuit simulations** (in Python using `Qiskit Aer`), benchmarking quantum state fidelity decay across parameterized depolarizing noise channels ($p_w \in [0.0, 1.0]$).
+A dual-paradigm simulation framework for **Quantum Teleportation** protocols in noisy quantum networks, developed as part of the **Quantum Computing and Quantum Internet** course by **Dario Bandecchi** and **Giacomo Raffo**.
+
+This project compares **discrete-event quantum network simulations** (in Julia using `QuantumSavory.jl` and `ConcurrentSim.jl`) with **gate-level quantum circuit simulations** (in Python using `Qiskit Aer`), benchmarking quantum state fidelity decay across parameterized depolarizing noise channels ($p_w \in [0.0, 1.0]$).
 
 ---
 
@@ -32,16 +34,11 @@ This repository implements quantum teleportation across two complementary simula
 
 ## 📊 Key Results & Fidelity Analysis
 
-Quantum State Fidelity $F(\rho_{\text{in}}, \rho_{\text{out}}) = \text{Tr}\left(\sqrt{\sqrt{\rho_{\text{in}}} \rho_{\text{out}} \sqrt{\rho_{\text{in}}}}\right)$ was systematically computed across depolarization probabilities $p_w \in [0.0, 1.0]$.
+Quantum State Fidelity $F(\rho_{\text{in}}, \rho_{\text{out}}) = \text{Tr}\left(\sqrt{\sqrt{\rho_{\text{in}}} \rho_{\text{out}} \sqrt{\rho_{\text{in}}}}\right)$ was systematically evaluated across depolarization probabilities $p_w \in [0.0, 1.0]$. 
 
-| Metric | Julia (`QuantumSavory`) | Python (`Qiskit Aer`) |
-| :--- | :--- | :--- |
-| **Ideal Fidelity ($p_w = 0$)** | `1.00` | `1.00` |
-| **Completely Depolarized ($p_w = 1.0$)** | `0.25` (Maximal Mixed State) | `0.25` (Maximal Mixed State) |
-| **Noise Sensitivity Curve** | Linear degradation tracking $1 - \frac{3}{4}p_w$ | Density matrix decay matching theoretical bounds |
-| **Key Insights** | Validates distributed time-dependent protocol dynamics | Validates exact quantum circuit gate fidelity |
+Under ideal noiseless conditions ($p_w = 0$), both simulation paradigms achieve a perfect state fidelity of `1.00`. As the depolarizing probability reaches maximal noise ($p_w = 1.0$), the output converges to the maximally mixed state with a theoretical baseline fidelity of `0.25`.
 
-* **Plots generated**: `Results/plot_julia.png` and `Results/plot_qiskit.png` demonstrate exact numerical agreement between event-driven network protocols and gate-level circuit executions.
+The generated plots (`Results/plot_julia.png` and `Results/plot_qiskit.png`) validate complete numerical consistency between the asynchronous event-driven network protocol and the gate-level quantum circuit execution.
 
 ---
 
@@ -49,6 +46,10 @@ Quantum State Fidelity $F(\rho_{\text{in}}, \rho_{\text{out}}) = \text{Tr}\left(
 
 ```
 teleportation-service/
+├── Julia/
+│   └── TeleportationService.jl    # Discrete-event network simulation protocol
+├── Python/
+│   └── teleportation_service.ipynb # Gate-level Qiskit noise simulation notebook
 ├── Results/
 │   ├── plot_julia.png             # Benchmark: Fidelity vs Depolarization (Julia)
 │   └── plot_qiskit.png            # Benchmark: Fidelity vs Depolarization (Qiskit)
@@ -89,6 +90,13 @@ jupyter notebook teleportation_service.ipynb
 * **Quantum Computing & Information**: Bell state entanglements, Quantum Teleportation, Quantum Noise Modeling (Depolarizing Channels), Quantum State Fidelity Analysis.
 * **Network & Event-Driven Simulation**: Asynchronous protocol design, concurrent processes, classical delay modeling, message buffers.
 * **Software Engineering**: Modular Julia package structure, Qiskit workflow optimization, dual-language implementation (Julia & Python), reproducible benchmarking.
+
+---
+
+## 👥 Authors & Academic Context
+
+* **Course**: Quantum Computing and Quantum Internet
+* **Authors**: Dario Bandecchi, Giacomo Raffo
 
 ---
 
