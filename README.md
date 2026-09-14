@@ -3,7 +3,6 @@
 [![Julia](https://img.shields.io/badge/Julia-1.9+-9558B2?style=flat&logo=julia&logoColor=white)](https://julialang.org/)
 [![Qiskit](https://img.shields.io/badge/Qiskit-1.0+-6929C4?style=flat&logo=qiskit&logoColor=white)](https://qiskit.org/)
 [![QuantumSavory](https://img.shields.io/badge/QuantumSavory-NetworkSim-009688?style=flat)](https://github.com/QuantumSavory/QuantumSavory.jl)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 A dual-paradigm simulation framework for **Quantum Teleportation** protocols in noisy quantum networks, developed as part of the **Quantum Computing and Quantum Internet** course by **Dario Bandecchi** and **Giacomo Raffo**.
 
@@ -90,8 +89,3 @@ jupyter notebook teleportation_service.ipynb
 * **Course**: Quantum Computing and Quantum Internet
 * **Authors**: Dario Bandecchi, Giacomo Raffo
 
----
-
-## 📜 License
-
-Distributed under the MIT License. See `LICENSE` for details.
