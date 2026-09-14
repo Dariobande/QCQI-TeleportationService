@@ -47,14 +47,15 @@ The generated plots (`Results/plot_julia.png` and `Results/plot_qiskit.png`) val
 ```
 teleportation-service/
 ├── Julia/
-│   └── TeleportationService.jl    # Discrete-event network simulation protocol
+│   └── TeleportationService.jl     # Discrete-event network simulation protocol
 ├── Python/
 │   └── teleportation_service.ipynb # Gate-level Qiskit noise simulation notebook
 ├── Results/
-│   ├── plot_julia.png             # Benchmark: Fidelity vs Depolarization (Julia)
-│   └── plot_qiskit.png            # Benchmark: Fidelity vs Depolarization (Qiskit)
-└── README.md                       # Technical documentation & benchmark analysis
-```
+│   ├── plot_julia.png              
+│   └── plot_qiskit.png
+└── Specifications.pdf              # Project specifications
+└── Presentation.pdf                # Presentation slides
+└── README.md                       
 
 ---
 
