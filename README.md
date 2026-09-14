@@ -53,8 +53,8 @@ teleportation-service/
 ├── Results/
 │   ├── plot_julia.png              
 │   └── plot_qiskit.png
-└── Specifications.pdf              # Project specifications
-└── Presentation.pdf                # Presentation slides
+├── Specifications.pdf              # Project specifications
+├── Presentation.pdf                # Presentation slides
 └── README.md                       
 ```
 ---
