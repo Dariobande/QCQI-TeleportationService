@@ -74,7 +74,7 @@ git clone https://github.com/Dariobande/teleportation-service.git
 cd teleportation-service/Julia
 
 # Run the Julia simulation script
-julia --project=../TeleportationService TeleportationService.jl
+julia TeleportationService.jl
 ```
 
 ### Running the Python / Qiskit Notebook
@@ -83,15 +83,6 @@ julia --project=../TeleportationService TeleportationService.jl
 cd teleportation-service/Python
 jupyter notebook teleportation_service.ipynb
 ```
-
----
-
-## 💡 Tech Stack & Skills Demonstrated
-
-* **Quantum Computing & Information**: Bell state entanglements, Quantum Teleportation, Quantum Noise Modeling (Depolarizing Channels), Quantum State Fidelity Analysis.
-* **Network & Event-Driven Simulation**: Asynchronous protocol design, concurrent processes, classical delay modeling, message buffers.
-* **Software Engineering**: Modular Julia package structure, Qiskit workflow optimization, dual-language implementation (Julia & Python), reproducible benchmarking.
-
 ---
 
 ## 👥 Authors & Academic Context
