@@ -161,9 +161,8 @@ Quantum state fidelity $F(\rho_{\text{in}}, \rho_{\text{out}}) = \text{Tr}\left(
 
 ### Key Observations
 - **Perfect Protocol Parity:** Both the discrete-event network simulation (Julia / `QuantumSavory.jl`) and the gate-level quantum circuit (Python / `Qiskit Aer`) produce mathematically equivalent fidelity decay curves across the entire noise spectrum.
-- **Ideal Regime ($p_w = 0.0$):** Under noiseless conditions, the teleportation protocol achieves perfect state reconstruction fidelity ($F = 1.0000$).
+- **Ideal Regime ($p_w = 0.0$):** Under noiseless conditions, the teleportation protocol achieves perfect state reconstruction fidelity ($F = 1$).
 - **Convergence to Maximally Mixed State ($p_w = 1.0$):** At maximal noise ($p_w = 1.0$), the output state collapses to the maximally mixed state $\rho_{\text{out}} = \frac{I}{2}$, yielding the theoretical baseline fidelity of $\langle\psi|\frac{I}{2}|\psi\rangle = 0.5$.
-- **Validation of Feed-Forward Dynamics:** The success of the state reconstruction confirms that both the asynchronous message buffering and the mid-circuit classical branching logic correctly apply conditional Pauli corrections without loss of quantum coherence.
 
 The generated benchmarking plots are available in:
 - [`results/plot_julia.png`](file:///Users/dariobandecchi/Documents/GitHub/teleportation-service/results/plot_julia.png)
