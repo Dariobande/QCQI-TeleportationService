@@ -45,7 +45,7 @@ The simulation parameters configure the network topology, physical link characte
 | **Trials per Noise Level** | $n_{\text{req}}$ | `1` (Julia) / `3` (Python) | Integer | Teleportation requests simulated between random node pairs per noise step |
 | **Entanglement Setup Time** | $\mu_{\text{ent}}$ | `200.0` | Milliseconds (ms) | Mean of exponential distribution for asynchronous Bell pair generation |
 | **Classical Link Delay** | $t_{\text{delay}}$ | `20.0` | Milliseconds (ms) | Latency of the classical communication channel between Sender and Receiver |
-| **Teleported State** | $|\psi\rangle$ | $\frac{1}{\sqrt{2}}|0\rangle + \frac{1}{\sqrt{2}}|1\rangle$ | Statevector | Equal superposition arbitrary target state to be teleported |
+| **Teleported State** | $\vert\psi\rangle$ | $\frac{1}{\sqrt{2}}\vert 0\rangle + \frac{1}{\sqrt{2}}\vert 1\rangle$ | Statevector | Equal superposition arbitrary target state to be teleported |
 
 ### Protocol Correction Table
 
@@ -53,10 +53,10 @@ Upon performing Bell State Measurement (BSM) on the input state and the local ha
 
 | Measurement Outcome ($b_1, b_2$) | Receiver Pauli Correction | Receiver State Prior to Correction | Final Reconstructed State |
 | :---: | :---: | :---: | :---: |
-| `(0, 0)` | $I$ (Identity) | $\alpha|0\rangle + \beta|1\rangle$ | $|\psi\rangle$ |
-| `(0, 1)` | $X$ (Bit Flip) | $\alpha|1\rangle + \beta|0\rangle$ | $|\psi\rangle$ |
-| `(1, 0)` | $Z$ (Phase Flip) | $\alpha|0\rangle - \beta|1\rangle$ | $|\psi\rangle$ |
-| `(1, 1)` | $X Z$ (Bit and Phase Flip) | $\alpha|1\rangle - \beta|0\rangle$ | $|\psi\rangle$ |
+| `(0, 0)` | $I$ (Identity) | $\alpha\vert 0\rangle + \beta\vert 1\rangle$ | $\vert\psi\rangle$ |
+| `(0, 1)` | $X$ (Bit Flip) | $\alpha\vert 1\rangle + \beta\vert 0\rangle$ | $\vert\psi\rangle$ |
+| `(1, 0)` | $Z$ (Phase Flip) | $\alpha\vert 0\rangle - \beta\vert 1\rangle$ | $\vert\psi\rangle$ |
+| `(1, 1)` | $X Z$ (Bit and Phase Flip) | $\alpha\vert 1\rangle - \beta\vert 0\rangle$ | $\vert\psi\rangle$ |
 
 ---
 
@@ -163,22 +163,15 @@ The project is structured into two autonomous simulation engines, each capturing
 
 ## Simulation Results & Comparative Analysis
 
-The fidelity between the transmitted state $\rho_{\text{in}} = |\psi\rangle\langle\psi|$ and the reconstructed receiver state $\rho_{\text{out}}$ was benchmarked over the depolarization noise interval $p_w \in [0.0, 1.0]$.
-
-| Depolarization Probability ($p_w$) | Theoretical State Description | Expected Fidelity $F(\rho_{\text{in}}, \rho_{\text{out}})$ | Julia (`QuantumSavory`) | Python (`Qiskit Aer`) |
-| :---: | :--- | :---: | :---: | :---: |
-| **`0.00`** | Ideal noiseless Bell channel | `1.0000` | `1.0000` | `1.0000` |
-| **`0.25`** | Weak depolarization | `0.8125` | `0.8125` | `0.8125` |
-| **`0.50`** | Moderate depolarization | `0.6250` | `0.6250` | `0.6250` |
-| **`0.75`** | Heavy depolarization | `0.4375` | `0.4375` | `0.4375` |
-| **`1.00`** | Fully depolarized (maximally mixed) | `0.2500` | `0.2500` | `0.2500` |
+Quantum state fidelity $F(\rho_{\text{in}}, \rho_{\text{out}}) = \text{Tr}\left(\sqrt{\sqrt{\rho_{\text{in}}} \rho_{\text{out}} \sqrt{\rho_{\text{in}}}}\right)$ was systematically evaluated across depolarization probabilities $p_w \in [0.0, 1.0]$ between random pairs of network nodes.
 
 ### Key Observations
-- **Perfect Protocol Parity:** Both the discrete-event network simulation and the gate-level quantum circuit produce mathematically equivalent fidelity curves across all noise points.
-- **Convergence to Maximally Mixed State:** At maximal noise ($p_w = 1.0$), the output state collapses to $\rho_{\text{out}} = \frac{I}{2}$, yielding a baseline fidelity of $\langle\psi|\frac{I}{2}|\psi\rangle = 0.25$.
+- **Perfect Protocol Parity:** Both the discrete-event network simulation (Julia / `QuantumSavory.jl`) and the gate-level quantum circuit (Python / `Qiskit Aer`) produce mathematically equivalent fidelity decay curves across the entire noise spectrum.
+- **Ideal Regime ($p_w = 0.0$):** Under noiseless conditions, the teleportation protocol achieves perfect state reconstruction fidelity ($F = 1.0000$).
+- **Convergence to Maximally Mixed State ($p_w = 1.0$):** At maximal noise ($p_w = 1.0$), the output state collapses to the maximally mixed state $\rho_{\text{out}} = \frac{I}{2}$, yielding the theoretical baseline fidelity of $\langle\psi|\frac{I}{2}|\psi\rangle = 0.2500$.
 - **Validation of Feed-Forward Dynamics:** The success of the state reconstruction confirms that both the asynchronous message buffering and the mid-circuit classical branching logic correctly apply conditional Pauli corrections without loss of quantum coherence.
 
-The generated curves are available in:
+The generated benchmarking plots are available in:
 - [`results/plot_julia.png`](file:///Users/dariobandecchi/Documents/GitHub/teleportation-service/results/plot_julia.png)
 - [`results/plot_qiskit.png`](file:///Users/dariobandecchi/Documents/GitHub/teleportation-service/results/plot_qiskit.png)
 
