@@ -30,7 +30,7 @@ Key system properties and simulation features include:
 - **Asynchronous Protocol Architecture:** Realistic modeling of distributed quantum nodes using coroutines (`@process`, `@resumable`), asynchronous message queues, and queryable memory tags.
 - **Stochastic Delays & Latencies:** Explicit modeling of physical network timings, including exponential setup times for entanglement distribution ($\mu = 200\text{ ms}$) and classical transmission propagation delays ($t_{\text{delay}} = 20\text{ ms}$).
 - **Dynamic Circuit Corrections:** Implementation of conditional feed-forward Pauli corrections using real-time classical control flow (`if_test` in Qiskit, tag queries in QuantumSavory).
-- **Exact Tomography & Fidelity Benchmarking:** Sweep over the full noise spectrum $p_w \in [0.0, 1.0]$ demonstrating perfect analytical and numerical consistency from ideal fidelity ($F = 1.00$) down to the theoretical completely depolarized limit ($F = 0.25$).
+- **Exact Tomography & Fidelity Benchmarking:** Sweep over the full noise spectrum $p_w \in [0.0, 1.0]$ demonstrating perfect analytical and numerical consistency from ideal fidelity ($F = 1.00$) down to the theoretical completely depolarized limit ($F = 0.50$).
 
 ---
 
@@ -49,9 +49,9 @@ The simulation parameters configure the network topology, physical link characte
 
 ### Protocol Correction Table
 
-Upon performing Bell State Measurement (BSM) on the input state and the local half of the entangled pair, the sender generates two classical bits $(b_1, b_2) \in \{0, 1\}^2$ that dictate the conditional Pauli unitary operation applied by the receiver:
+Upon performing Bell State Measurement (BSM) on the input state and the local half of the entangled pair, the sender generates two classical bits that dictate the conditional Pauli unitary operation applied by the receiver:
 
-| Measurement Outcome ($b_1, b_2$) | Receiver Pauli Correction | Receiver State Prior to Correction | Final Reconstructed State |
+| Measurement Outcome | Receiver Pauli Correction | Receiver State Prior to Correction | Final Reconstructed State |
 | :---: | :---: | :---: | :---: |
 | `(0, 0)` | $I$ (Identity) | $\alpha\vert 0\rangle + \beta\vert 1\rangle$ | $\vert\psi\rangle$ |
 | `(0, 1)` | $X$ (Bit Flip) | $\alpha\vert 1\rangle + \beta\vert 0\rangle$ | $\vert\psi\rangle$ |
@@ -64,8 +64,8 @@ Upon performing Bell State Measurement (BSM) on the input state and the local ha
 
 The project is structured into two autonomous simulation engines, each capturing distinct abstraction layers of quantum systems:
 
-1. **Discrete-Event Quantum Network Engine ([`Julia/TeleportationService.jl`](file:///Users/dariobandecchi/Documents/GitHub/teleportation-service/Julia/TeleportationService.jl), [`TeleportationService/src/TeleportationService.jl`](file:///Users/dariobandecchi/Documents/GitHub/teleportation-service/TeleportationService/src/TeleportationService.jl)):**
-   - **`QNCoreProtocol`:** Emulates the physical quantum network substrate. Schedules entangled pair generation with stochastic Poissonian delays, injects depolarizing noise into the bipartite density matrix, and tags receiver/sender registers with creation timestamps.
+1. **Discrete-Event Quantum Network Engine ([`Julia/TeleportationService.jl`](file:///Users/dariobandecchi/Documents/GitHub/teleportation-service/Julia/TeleportationService.jl)):**
+   - **`QNCoreProtocol`:** Emulates the physical quantum network substrate. Schedules entangled pair generation with exponentially distributed delays, injects depolarizing noise into the bipartite density matrix, and tags receiver/sender registers with creation timestamps.
    - **`SenderProtocol`:** Initializes the target quantum state, synchronizes via `@yield onchange_tag(regSrc)`, executes the Bell measurement (`CNOT` followed by `Hadamard` and projective readout), and transmits classical results over the network channel.
    - **`ReceiverProtocol`:** Suspends on local registers waiting for entanglement establishment and classical message arrival via asynchronous message buffer (`mb = messagebuffer(net, nodeDst)`), extracting measurement tags and applying conditional Pauli $Z$ and $X$ transformations.
 
@@ -85,11 +85,6 @@ The project is structured into two autonomous simulation engines, each capturing
 │   └── TeleportationService.jl       # Discrete-event network simulation script
 ├── Python/
 │   └── teleportation_service.ipynb   # Gate-level circuit simulation & tomography notebook
-├── TeleportationService/             # Julia package directory
-│   ├── Project.toml                  # Julia package configuration and dependencies
-│   ├── Manifest.toml                 # Resolved dependency tree lockfile
-│   └── src/
-│       └── TeleportationService.jl   # Modular Julia package source
 ├── results/                          # Benchmarking plots and simulation artifacts
 │   ├── plot_julia.png                # Fidelity vs. noise plot from QuantumSavory
 │   └── plot_qiskit.png               # Fidelity vs. noise plot from Qiskit Aer
@@ -99,8 +94,8 @@ The project is structured into two autonomous simulation engines, each capturing
 └── README.md                         # Project documentation
 ```
 
-> **Note on simulation outputs and environments:**  
-> Numerical execution plots are stored in the [`results/`](file:///Users/dariobandecchi/Documents/GitHub/teleportation-service/results/) directory. The project can be run either as standalone scripts or by activating the Julia package environment in [`TeleportationService/`](file:///Users/dariobandecchi/Documents/GitHub/teleportation-service/TeleportationService/).
+> **Note on simulation outputs:**  
+> Numerical execution plots generated by the simulations are stored in the [`results/`](file:///Users/dariobandecchi/Documents/GitHub/teleportation-service/results/) directory.
 
 ---
 
@@ -168,7 +163,7 @@ Quantum state fidelity $F(\rho_{\text{in}}, \rho_{\text{out}}) = \text{Tr}\left(
 ### Key Observations
 - **Perfect Protocol Parity:** Both the discrete-event network simulation (Julia / `QuantumSavory.jl`) and the gate-level quantum circuit (Python / `Qiskit Aer`) produce mathematically equivalent fidelity decay curves across the entire noise spectrum.
 - **Ideal Regime ($p_w = 0.0$):** Under noiseless conditions, the teleportation protocol achieves perfect state reconstruction fidelity ($F = 1.0000$).
-- **Convergence to Maximally Mixed State ($p_w = 1.0$):** At maximal noise ($p_w = 1.0$), the output state collapses to the maximally mixed state $\rho_{\text{out}} = \frac{I}{2}$, yielding the theoretical baseline fidelity of $\langle\psi|\frac{I}{2}|\psi\rangle = 0.2500$.
+- **Convergence to Maximally Mixed State ($p_w = 1.0$):** At maximal noise ($p_w = 1.0$), the output state collapses to the maximally mixed state $\rho_{\text{out}} = \frac{I}{2}$, yielding the theoretical baseline fidelity of $\langle\psi|\frac{I}{2}|\psi\rangle = 0.5000$.
 - **Validation of Feed-Forward Dynamics:** The success of the state reconstruction confirms that both the asynchronous message buffering and the mid-circuit classical branching logic correctly apply conditional Pauli corrections without loss of quantum coherence.
 
 The generated benchmarking plots are available in:
